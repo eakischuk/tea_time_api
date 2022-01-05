@@ -84,6 +84,44 @@ RSpec.describe 'CustomerSubscriptions requests' do
       expect(updated_sub[:data][:attributes][:subscription]).to have_key(:frequency)
       expect(updated_sub[:data][:attributes][:subscription][:frequency]).to be_an(Integer)
     end
+
+    it 'returns an index of a customers subscriptions' do
+      customer_sub1 = @customer.customer_subscriptions.create(subscription_id: @subscription_1.id, tea_name: 'black', status: 'active')
+      customer_sub2 = @customer.customer_subscriptions.create(subscription_id: @subscription_1.id, tea_name: 'green', status: 'cancelled')
+
+      get "/api/v1/customer_subscriptions", params: {email: @customer.email}
+
+      expect(response.status).to eq(200)
+      customer_subs = JSON.parse(response.body, symbolize_names: true)
+
+      expect(customer_subs).to be_a(Hash)
+      expect(customer_subs).to have_key(:data)
+      expect(customer_subs[:data]).to be_an(Array)
+      expect(customer_subs[:data].count).to eq(2)
+      customer_subs[:data].each do |sub|
+        expect(sub).to be_a(Hash)
+        expect(sub).to have_key(:id)
+        expect(sub[:id]).to be_a(String)
+        expect(sub).to have_key(:type)
+        expect(sub[:type]).to be_a(String)
+        expect(sub).to have_key(:attributes)
+        expect(sub[:attributes]).to be_a(Hash)
+        expect(sub[:attributes]).to have_key(:tea_name)
+        expect(sub[:attributes][:tea_name]).to be_a(String)
+        expect(sub[:attributes]).to have_key(:status)
+        expect(sub[:attributes][:status]).to be_a(String)
+        expect(sub[:attributes]).to have_key(:customer_name)
+        expect(sub[:attributes][:customer_name]).to be_a(String)
+        expect(sub[:attributes]).to have_key(:subscription)
+        expect(sub[:attributes][:subscription]).to be_a(Hash)
+        expect(sub[:attributes][:subscription]).to have_key(:title)
+        expect(sub[:attributes][:subscription][:title]).to be_a(String)
+        expect(sub[:attributes][:subscription]).to have_key(:price)
+        expect(sub[:attributes][:subscription][:price]).to be_a(Float)
+        expect(sub[:attributes][:subscription]).to have_key(:frequency)
+        expect(sub[:attributes][:subscription][:frequency]).to be_an(Integer)
+      end
+    end
   end
   describe 'sad paths' do
   end

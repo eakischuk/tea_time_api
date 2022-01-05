@@ -10,6 +10,12 @@ class Api::V1::CustomerSubscriptionsController < ApplicationController
     render json: Api::V1::CustomerSubscriptionSerializer.new(customer_sub), status: :ok
   end
 
+  def index
+    customer = Customer.find_by(email: params[:email])
+    customer_subs = customer.customer_subscriptions
+    render json: Api::V1::CustomerSubscriptionSerializer.new(customer_subs), status: :ok
+  end
+
   private
 
   def customer_sub_params
