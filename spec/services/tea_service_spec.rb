@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe TeaService do
   it 'returns teas' do
-    response = TeaService.teas
+    response = TeaService.all_teas
 
     expect(response).to be_an(Array)
     response.each do |tea|

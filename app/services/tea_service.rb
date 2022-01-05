@@ -1,5 +1,5 @@
 class TeaService
-  def self.teas
+  def self.all_teas
     response = conn.get("/tea")
     parse_json(response)
   end
