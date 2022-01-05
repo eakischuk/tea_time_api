@@ -5,4 +5,8 @@ class Customer < ApplicationRecord
   validates :last_name, presence: true
 
   has_many :customer_subscriptions
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
 end
