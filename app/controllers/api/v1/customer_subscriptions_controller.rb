@@ -1,13 +1,19 @@
 class Api::V1::CustomerSubscriptionsController < ApplicationController
   def create
     customer_sub = CustomerSubscription.create(new_sub_params)
-    render json: CustomerSubscriptionSerializer.new(customer_sub), status: :created
+    render json: Api::V1::CustomerSubscriptionSerializer.new(customer_sub), status: :created
+  end
+
+  def update
+    customer_sub = CustomerSubscription.find(params[:id])
+    customer_sub.update(customer_sub_params)
+    render json: Api::V1::CustomerSubscriptionSerializer.new(customer_sub), status: :ok
   end
 
   private
 
   def customer_sub_params
-    params.require(:subscription).permit(:email, :subscription_id, :tea_name)
+    params.require(:subscription).permit(:email, :subscription_id, :tea_name, :status)
   end
 
   def new_sub_params
